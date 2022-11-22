@@ -5,52 +5,52 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const { response } = require("express");
 
 app.use(express.json());
+
+// Koneksi ke Database MySQL
+const db = mysql.createConnection({
+    user: "fariz",
+    host: "localhost",
+    password: "fariz",
+    database: "log-regDB"
+});
+// Koneksi ke Database MySQL
 
 // Implementasi Cors
 app.use(
     cors({
-        origin: ["http://localhost:3001"],
+        origin: ["http://localhost:3000"],
         methods: ["GET", "POST"],
-        Credential: true,
+        credentials: true
     })
 );
+// Implementasi Cors
 
 // Implementasi Body-Parser
 app.use(bodyParser.urlencoded({ extended: true }));
+// Implementasi Body-Parser
 
-// Koneksi ke Database MySQL
-const db = mysql.createConnection({
-    users: "root",
-    host: "localhost",
-    password: "",
-    database: "log-regDB"
-});
-
+// Proses Register
 app.post("/register", (req, res) => {
+    // Variabel Data Yang Dikirim Dari Client (FrontEnd)
     const username = req.body.username;
     const password = req.body.password;
     const name = req.body.name;
 
-    console.log(username, password, name);
+    // console.log(username, password, name);
 
     bcrypt.hash(password, 10, (err, hash) => {
-        if (err) {
-            console.log(err);
-        }
-        db.query(
-            "INSERT INTO users (username, password, name VALUES (?,?,?)",
-            (username, hash, name),
-            (err, result) => {
-                console.log(err);
-            }
-        );
+        // if (err) {
+        //     console.log(hash);
+        // }
+        db.query("INSERT INTO users (name, username, password) VALUES (?,?,?)",
+            [name, username, hash]);
     });
 });
+// Proses Register
 
-app.post("/login", (req, res) => {
+app.post("/", (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
 
@@ -88,6 +88,6 @@ app.post("/login", (req, res) => {
     );
 });
 
-app.listen(3001, () => {
+app.listen('3001', () => {
     console.log("running server")
 });

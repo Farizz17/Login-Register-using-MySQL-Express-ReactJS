@@ -68,7 +68,7 @@ app.post("/", (req, res) => {
                 bcrypt.compare(password, result[0].password, (error, response) => {
                     if (response) {
                         let token = jwt.sign(
-                            { userId: result[0].id, username: result[0].username },
+                            { userId: result[0].id, username: result[0].username, name: result[0].name },
                             "secretkeyappearshere",
                             { expiresIn: "1h" }
                         );
